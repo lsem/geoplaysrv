@@ -12,6 +12,8 @@ import (
 )
 
 // ApproxRect is a handler for /approxRect HTTP requests.
+// Note, this handler assumes it is already decorated to set proper
+// HTTP response headers.
 func ApproxRect(w http.ResponseWriter, r *http.Request) {
 	south := r.URL.Query().Get("south")
 	west := r.URL.Query().Get("west")
@@ -52,16 +54,16 @@ func ApproxRect(w http.ResponseWriter, r *http.Request) {
 
 	rect := s2.RectFromLatLng(s2.LatLngFromDegrees(hlp.AsFloat(south), hlp.AsFloat(west)))
 	rect = rect.AddPoint(s2.LatLngFromDegrees(hlp.AsFloat(north), hlp.AsFloat(east)))
-	fmt.Println("rect: ", rect)
+	fmt.Println("dbg: rect: ", rect)
 
 	region := s2.Region(rect)
-	fmt.Println("region: ", region)
+	fmt.Println("dbg: region: ", region)
 
 	rc := s2.RegionCoverer{MinLevel: hlp.AsInt(minLvl), MaxLevel: hlp.AsInt(maxLvl),
 		LevelMod: 0, MaxCells: hlp.AsInt(maxCells)}
 	covering := rc.Covering(region)
 
-	fmt.Println("covering: ", covering)
+	fmt.Println("dbg: covering: ", covering)
 
 	response := viewModels.ApproxResponse{CellIDs: nil}
 
