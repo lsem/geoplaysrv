@@ -1,0 +1,19 @@
+$ go run main.go
+Server is starting at localhost:8000 ..
+north:  -33.59631896113268, 151.69921875
+south:  -34.55181136917047, 150.1171875
+minLvl:  20
+maxLvl:  30
+maxCells:  60
+dbg: rect:  [Lo[-34.5518114, 150.1171875], Hi[-33.5963190, 151.6992188]]
+dbg: region:  [Lo[-34.5518114, 150.1171875], Hi[-33.5963190, 151.6992188]]
+
+
+But this is fine:
+south:  -34.41597338448186
+west:  150.413818359375
+north:  -33.55055114384406
+east:  151.6497802734375
+minLvl:  1
+maxLvl:  30
+maxCells:  60

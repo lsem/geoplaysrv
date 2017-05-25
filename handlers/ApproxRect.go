@@ -23,6 +23,14 @@ func ApproxRect(w http.ResponseWriter, r *http.Request) {
 	maxLvl := r.URL.Query().Get("maxLvl")
 	maxCells := r.URL.Query().Get("maxCells")
 
+	fmt.Println("south: ", south)
+	fmt.Println("west: ", west)
+	fmt.Println("north: ", north)
+	fmt.Println("east: ", east)
+	fmt.Println("minLvl: ", minLvl)
+	fmt.Println("maxLvl: ", maxLvl)
+	fmt.Println("maxCells: ", maxCells)
+
 	if len(minLvl) == 0 || !hlp.IsInt(minLvl) {
 		http.Error(w, "minLvl missing or bad", 400)
 		return
@@ -36,6 +44,7 @@ func ApproxRect(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if len(south) == 0 || !hlp.IsFloat(south) {
+		fmt.Println("bad request: south: ", south)
 		http.Error(w, "south missing", 400)
 		return
 	}
