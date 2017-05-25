@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"net/http"
 
-	hlp "github.com/lsem/geosrv/helpers"
-	"github.com/lsem/geosrv/viewModels"
+	hlp "github.com/lsem/geoplaysrv/helpers"
+	"github.com/lsem/geoplaysrv/viewModels"
 
 	"github.com/golang/geo/s2"
 )
@@ -63,21 +63,28 @@ func ApproxRect(w http.ResponseWriter, r *http.Request) {
 
 	rect := s2.RectFromLatLng(s2.LatLngFromDegrees(hlp.AsFloat(south), hlp.AsFloat(west)))
 	rect = rect.AddPoint(s2.LatLngFromDegrees(hlp.AsFloat(north), hlp.AsFloat(east)))
-	fmt.Println("dbg: rect: ", rect)
 
 	region := s2.Region(rect)
-	fmt.Println("dbg: region: ", region)
 
 	rc := s2.RegionCoverer{MinLevel: hlp.AsInt(minLvl), MaxLevel: hlp.AsInt(maxLvl),
 		LevelMod: 0, MaxCells: hlp.AsInt(maxCells)}
+	fmt.Println("Calculating covering ")
 	covering := rc.Covering(region)
+	fmt.Println("Calculating covering DONE")
+	fmt.Println()
 
-	fmt.Println("dbg: covering: ", covering)
+	response := viewModels.ApproxResponse{}
 
-	response := viewModels.ApproxResponse{CellIDs: nil}
-
-	for _, c := range covering {
-		response.CellIDs = append(response.CellIDs, c.String())
+	for _, cid := range covering {
+		cell := viewModels.Cell{Level: 10, CellID: cid.String(), Vertices: nil}
+		s2Cell := s2.CellFromCellID(cid)
+		for vidx := 0; vidx < 4; vidx++ {
+			latLng := s2.LatLngFromPoint(s2Cell.Vertex(vidx))
+			cell.Vertices = append(cell.Vertices,
+				viewModels.LatLng{Lat: hlp.RadToDegrees(float64(latLng.Lat)),
+					Lng: hlp.RadToDegrees(float64(latLng.Lng))})
+		}
+		response.Cells = append(response.Cells, cell)
 	}
 	json.NewEncoder(w).Encode(response)
 }

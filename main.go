@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/lsem/geosrv/handlers"
+	"github.com/lsem/geoplaysrv/handlers"
 )
 
 func apiHandler(fn func(w http.ResponseWriter, r *http.Request)) func(w http.ResponseWriter, r *http.Request) {

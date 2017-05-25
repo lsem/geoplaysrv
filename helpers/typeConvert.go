@@ -25,3 +25,8 @@ func AsInt(v string) int {
 	i, _ := strconv.ParseInt(v, 10, 32)
 	return int(i)
 }
+
+// RadToDegrees returns degrees by redians
+func RadToDegrees(rad float64) float64 {
+	return rad * 180.0 / 3.14
+}
