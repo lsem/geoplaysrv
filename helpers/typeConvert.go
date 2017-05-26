@@ -1,6 +1,7 @@
 package helpers
 
 import "strconv"
+import "math"
 
 // IsFloat is a helepr for testing if string is valid float64
 func IsFloat(v string) bool {
@@ -28,5 +29,5 @@ func AsInt(v string) int {
 
 // RadToDegrees returns degrees by redians
 func RadToDegrees(rad float64) float64 {
-	return rad * 180.0 / 3.14
+	return rad * 180.0 / math.Pi
 }

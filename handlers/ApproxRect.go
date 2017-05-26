@@ -64,20 +64,24 @@ func ApproxRect(w http.ResponseWriter, r *http.Request) {
 	rect := s2.RectFromLatLng(s2.LatLngFromDegrees(hlp.AsFloat(south), hlp.AsFloat(west)))
 	rect = rect.AddPoint(s2.LatLngFromDegrees(hlp.AsFloat(north), hlp.AsFloat(east)))
 
+	fmt.Println("Rect.Lat.Lo:", rect.Lat.Lo)
+	fmt.Println("Rect.Lat.Hi:", rect.Lat.Hi)
+
 	region := s2.Region(rect)
 
 	rc := s2.RegionCoverer{MinLevel: hlp.AsInt(minLvl), MaxLevel: hlp.AsInt(maxLvl),
-		LevelMod: 0, MaxCells: hlp.AsInt(maxCells)}
+		MaxCells: hlp.AsInt(maxCells)}
 	fmt.Println("Calculating covering ")
 	covering := rc.Covering(region)
+	//covering := rc.InteriorCovering(region)
 	fmt.Println("Calculating covering DONE")
 	fmt.Println()
 
 	response := viewModels.ApproxResponse{}
 
 	for _, cid := range covering {
-		cell := viewModels.Cell{Level: 10, CellID: cid.String(), Vertices: nil}
 		s2Cell := s2.CellFromCellID(cid)
+		cell := viewModels.Cell{Level: s2Cell.Level(), CellID: cid.String(), Vertices: nil}
 		for vidx := 0; vidx < 4; vidx++ {
 			latLng := s2.LatLngFromPoint(s2Cell.Vertex(vidx))
 			cell.Vertices = append(cell.Vertices,
@@ -86,5 +90,8 @@ func ApproxRect(w http.ResponseWriter, r *http.Request) {
 		}
 		response.Cells = append(response.Cells, cell)
 	}
+
+	fmt.Println("covering.cells.count: ", len(covering))
+
 	json.NewEncoder(w).Encode(response)
 }
